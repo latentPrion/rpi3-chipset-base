@@ -1,0 +1,19 @@
+component Rpi3ClockDev {
+	hardware;
+	dataport Buf mmio;
+}
+
+component Rpi3ClockDrv {
+	dataport Buf mmio;
+
+	composition {
+		component Rpi3ClockDev clockdev;
+
+		connection seL4HardwareMMIO dev_to_drv_mmio(
+			from mmio, to clockdev.mmio);
+	}
+	configuration {
+		clockdev.mmio_paddr = 0xFF000000;
+		clockdev.mmio_size = 0x1000;
+	}
+}

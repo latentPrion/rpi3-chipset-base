@@ -1,0 +1,26 @@
+component Rpi3SpiDev {
+	hardware;
+	dataport Buf mmio;
+	emits IRQ irq0;
+}
+
+component Rpi3SpiDrv {
+	dataport Buf mmio;
+	consumes IRQ irq0;
+
+        composition {
+                component Rpi3SpiDev spidev;
+
+                connection seL4HardwareMMIO dev_to_drv_mmio(
+                        from mmio, to spidev.mmio);
+		connection seL4HardwareInterrupt dev_to_drv_irq0(
+			from spidev.irq0, to irq0);
+        }
+        configuration {
+                spidev.mmio_paddr = 0xFF004000;
+                spidev.mmio_size = 0x1000;
+
+		spidev.irq0_irq_number = 33;
+        }
+}
+

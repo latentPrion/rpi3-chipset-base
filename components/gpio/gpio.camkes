@@ -1,0 +1,34 @@
+component Rpi3GpioDev {
+	hardware;
+	dataport Buf mmio;
+	emits Irq pin_0_to_31;
+	emits Irq pin_32_to_63;
+}
+
+component Rpi3GpioDrv {
+	dataport Buf mmio;
+	consumes Irq pin_0_to_31;
+	consumes Irq pin_32_to_63;
+
+	emits GpioIrq eth_nic_gpio_irq0;
+
+        composition {
+                component Rpi3GpioDev gpiodev;
+
+                connection seL4HardwareMMIO dev_to_drv_mmio(
+                        from mmio, to gpiodev.mmio);
+		connection seL4HardwareInterrupt dev_to_drv_irq0(
+			from gpiodev.pin_0_to_31, to pin_0_to_31);
+		connection seL4HardwareInterrupt dev_to_drv_irq1(
+			from gpiodev.pin_32_to_63, to pin_32_to_63);
+        }
+        configuration {
+                gpiodev.mmio_paddr = 0xFF001000;
+                gpiodev.mmio_size = 0x1000;
+
+		gpiodev.pin_0_to_31_irq_number = 34;
+		gpiodev.pin_32_to_63_irq_number = 35;
+        }
+}
+
+

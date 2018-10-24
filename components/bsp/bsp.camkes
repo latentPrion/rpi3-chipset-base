@@ -1,0 +1,24 @@
+import <std_connector.camkes>;
+
+import <clock/clock.camkes>;
+import <mux/mux.camkes>;
+import <pmc/pmc.camkes>;
+import <gpio/gpio.camkes>;
+import <spi/spi.camkes>;
+
+component Rpi3ChipsetBase {
+	consumes GpioIrq eth_nic_gpio_irq0;
+
+	emits GpioIrq eth_nic_irq0;
+
+	composition {
+		component Rpi3ClockDrv clockdrv;
+		component Rpi3MuxDrv muxdrv;
+		component Rpi3GpioDrv gpiodrv;
+		component Rpi3PmcDrv pmcdrv;
+		component Rpi3SpiDrv spidrv;
+
+		connection seL4Notification gpiodrv_to_ext_eth_nic_irq0(
+			from gpiodrv.eth_nic_gpio_irq0, to eth_nic_gpio_irq0);
+	}
+}

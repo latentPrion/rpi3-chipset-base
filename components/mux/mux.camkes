@@ -1,0 +1,19 @@
+component Rpi3MuxDev {
+	hardware;
+	dataport Buf mmio;
+}
+
+component Rpi3MuxDrv {
+	dataport Buf mmio;
+
+        composition {
+                component Rpi3MuxDev muxdev;
+
+                connection seL4HardwareMMIO dev_to_drv_mmio(
+                        from mmio, to muxdev.mmio);
+        }
+        configuration {
+                muxdev.mmio_paddr = 0xFF002000;
+                muxdev.mmio_size = 0x1000;
+        }
+}
