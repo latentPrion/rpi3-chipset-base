@@ -25,6 +25,23 @@ component Rpi3SpiDrv {
                 spidev.mmio_size = 0x1000;
 
 		spidev.irq0_irq_number <- spidev.dtb["interrupts"][1];
+
+		spidev.dtb2 = dtb({
+			"aliases": "serial0"
+		});
+
+		spidev.dtb3 = dtb({
+			"properties": {
+				"reg[0]": 0x7e215080
+			}
+		});
+
+		spidev.dtb4 = dtb({
+			"path": ".*spi.*",
+			"properties": {
+				"clocks[*]": [0xe, 0x1]
+			}
+		});
         }
 }
 
