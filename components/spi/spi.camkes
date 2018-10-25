@@ -17,10 +17,14 @@ component Rpi3SpiDrv {
 			from spidev.irq0, to irq0);
         }
         configuration {
-                spidev.mmio_paddr = 0xFF004000;
+		spidev.dtb = dtb({
+			"path": ".*spi@7e215080.*"
+		});
+
+                spidev.mmio_paddr <- spidev.dtb["reg"][0];
                 spidev.mmio_size = 0x1000;
 
-		spidev.irq0_irq_number = 33;
+		spidev.irq0_irq_number <- spidev.dtb["interrupts"][1];
         }
 }
 
